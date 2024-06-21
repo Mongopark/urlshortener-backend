@@ -1,0 +1,14 @@
+{
+  "extends": "@adonisjs/tsconfig/tsconfig.app.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./build",
+    "baseUrl": ".",
+    "paths": {
+      "#controllers/*": ["./app/controllers/*"],
+      "#middleware/*": ["./app/middleware/*"]
+      // Add other path aliases as needed
+    }
+  },
+}
+
