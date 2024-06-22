@@ -11,18 +11,30 @@ import router from '@adonisjs/core/services/router'
 const UsersController = () => import('#controllers/users_controller')
 const PostsController = () => import('#controllers/posts_controller')
 const CartsController = () => import('#controllers/carts_controller')
+const RegisterController = () => import('#controllers/registers_controller')
+const LoginController = () => import('#controllers/login_controller')
+const UrlController = () => import('#controllers/urls_controller')
 
 
 
+
+router.post('register', [RegisterController, 'store'])
+
+
+router.post('login', [LoginController, 'store'])
 
 
 router.get('users', [UsersController, 'index'])
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
+router.post('url/shorten', [UrlController, 'shortenUrl'])
+
+router.get('url/:short', [UrlController, 'getShortUrl'])
+
+// router.get('/', async () => {
+//   return {
+//     hello: 'world',
+//   }
+// })
 
 router.post('/postbody', async ({ request }) => {
   console.log(request.body()) //logs the body of the post
@@ -46,7 +58,7 @@ router.get('/about', () => {
 
 
 // POST method
-router.post('users', () => {})
+// router.post('users', () => {})
 
 // PUT method
 router.put('users/:id', () => {})

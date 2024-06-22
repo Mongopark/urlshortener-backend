@@ -1,11 +1,17 @@
+//THIS CONTROLLER INTERACTS WITH THE DATABASE
 import type { HttpContext } from '@adonisjs/core/http'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
 
 export default class CartsController {
   /**
-   * Display a list of resource
+   * GET REQUEST: used for getting all posts
    */
   async index({}: HttpContext) {
-    return `the post was added successfully`
+    const allPosts = await prisma.post.findMany()
+
+    return allPosts
   }
 
   /**
@@ -15,18 +21,26 @@ export default class CartsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * POST REQUEST: Used for creating a single post from endpoint localhost:3333/carts
    */
   async store({ request }: HttpContext) {
-    const { product_id, item, quantity, category } = request.body();
-    console.log(`the post ${item} was added successfully`)
-        return `the post ${item} was added successfully`;
+     const post = await prisma.post.create({
+      data: request.only(['title', 'content'])
+     }) 
+    
+     return post
 }
 
   /**
-   * Show individual record
+   * GET REQUEST: Used for getting a single post from endpoint localhost:3333/carts/fdgshjfg877tyt where the id = "fdgshjfg877tyt"
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) {
+    const post = await prisma.post.findUnique({
+      where: { id: params.id },
+    })
+
+    return post
+  }
 
   /**
    * Edit individual record
@@ -34,12 +48,27 @@ export default class CartsController {
   async edit({ params }: HttpContext) {}
 
   /**
-   * Handle form submission for the edit action
+   * PATCH REQUEST: Used for updating/changing a single post, a body {"title": "michael scottfield", "content": "prison breaker"} will be passed to the endpoint localhost:3333/carts/fdgshjfg877tyt where the id = "fdgshjfg877tyt"
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request }: HttpContext) {
+    const post = await prisma.post.update({
+      where: { id: params.id },
+      data: request.only(['title', 'content']),
+    })
+
+    return post
+  }
 
   /**
-   * Delete record
+   * DELETE REQUEST: used to delete a single post from endpoint localhost:3333/carts/fdgshjfg877tyt where the id = "fdgshjfg877tyt"
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params }: HttpContext) {
+    const post = await prisma.post.delete({
+
+      where: { id: params.id },
+
+    })
+
+    return post
+  }
 }

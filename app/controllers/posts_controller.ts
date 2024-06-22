@@ -1,3 +1,4 @@
+//THIS CONTROLLER INTERACTS WITH THE SESSION
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PostsController {
