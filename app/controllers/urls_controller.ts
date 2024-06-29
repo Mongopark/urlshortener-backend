@@ -2,40 +2,98 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { PrismaClient } from '@prisma/client'
 import { customAlphabet } from 'nanoid'
 
+
 const prisma = new PrismaClient()
-const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8)
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 6)
 
 export default class UrlsController {
-  public async shortenUrl({ request, response }: HttpContext) {
-    const original = request.input('original')
+    /**
+   * GET REQUEST: used for getting all posts
+   */
+  async getAllUrls({response}: HttpContext) {
+    const allUrls = await prisma.url.findMany({
+      include: { user: true }
+    })
 
+    return response.json({
+        message: `all URLs retrieved successfully`,
+        data: allUrls
+      })
+  }
+
+
+    /**
+   * GET REQUEST: Used for getting a single post from endpoint localhost:3333/carts/fdgshjfg877tyt where the id = "fdgshjfg877tyt"
+   */
+    async singleUserUrl({ response, params }: HttpContext) {
+      const post = await prisma.user.findUnique({
+        where: { id: params.id },
+        include: { urls: true }
+      })
+  
+      return response.json({
+        message: `urls for user ${post?.email} retrieved successfully`,
+        data: post
+      })
+    }
+
+
+
+
+
+
+
+
+  public async shortenUrl({ request, response }: HttpContext) {
+    const { original, name, description, user_id } = request.only(['original', 'name', 'description', 'user_id']);
+    
     try {
       let savedUrl = await prisma.url.findFirst({
-        where: { original }
-      })
-
-      let short: string
+        where: { 
+          name,
+          user_id,
+        }
+      });
+console.log(savedUrl);
+  
       if (savedUrl) {
-        short = savedUrl.short
+        return response.json({
+          message: `URL name ${savedUrl?.name} already in use, use another name or input all fields`,
+          data: savedUrl,
+          status: 'failure'
+        });
       } else {
-        short = nanoid()
+        let short = nanoid();
         savedUrl = await prisma.url.create({
           data: {
+            name,
+            description,
+            short,
+            original,
+            user: {
+              connect: { id: user_id }
+            }
+          }
+        });
+  
+        return response.json({
+          message: `URL ${savedUrl.name} created successfully, refresh page to effect`,
+          data: {
+            name,
+            description,
             short,
             original
-          }
-        })
+          },
+          status: 'success'
+        });
       }
-
-      return response.json({
-        short_url: short,
-        original_url: original
-      })
     } catch (err) {
-      console.log(err)
-      return response.status(500).json('Server Error')
+      console.log(err);
+      return response.status(500).json(`an error occured ${err}`);
     }
   }
+
+
 
   public async getShortUrl({ params, response }: HttpContext) {
     const short = params.short

@@ -21,7 +21,6 @@ model Post {
   content String
 }
 
-
 model Cart {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -30,21 +29,26 @@ model Cart {
   content String
 }
 
-
-
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Define the relation to URLs
+  urls Url[]
 }
 
-
 model Url {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  original  String
-  short     String   @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   
+  description String
+  original    String
+  short       String   @unique
+  createdAt   DateTime @default(now())
+
+  // Foreign key to reference the User model
+  user_id String @db.ObjectId
+  user    User   @relation(fields: [user_id], references: [id])
 }

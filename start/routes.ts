@@ -24,11 +24,13 @@ router.post('register', [RegisterController, 'store'])
 router.post('login', [LoginController, 'store'])
 
 
-router.get('users', [UsersController, 'index'])
+router.get('users', [UsersController, 'getAllUsers'])
+router.get('user/:id', [UsersController, 'getSingleUser'])
 
 router.post('url/shorten', [UrlController, 'shortenUrl'])
-
 router.get('url/:short', [UrlController, 'getShortUrl'])
+router.get('url', [UrlController, 'getAllUrls'])
+router.get('user/url/:id', [UrlController, 'singleUserUrl'])
 
 // router.get('/', async () => {
 //   return {
