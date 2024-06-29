@@ -64,11 +64,13 @@ export default class PostsController {
   /**
    * Edit individual record
    */
+        // @ts-ignore e is an rtk query error
   async edit({ params }: HttpContext) {}
 
   /**
    * Handle form submission for the edit action
    */
+        // @ts-ignore e is an rtk query error
   async update({ params, request }: HttpContext) {}
 
   /**

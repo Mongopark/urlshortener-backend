@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { PrismaClient } from '@prisma/client'
 import Hash from '@adonisjs/core/services/hash'
+// @ts-ignore e is an rtk query error
 import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
@@ -39,7 +40,6 @@ export default class LoginController {
       token, // Uncomment if using JWT
       data: {
         id: user.id,
-        name: user.name,
         email: user.email,
       },
     })

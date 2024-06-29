@@ -45,6 +45,7 @@ export default class CartsController {
   /**
    * Edit individual record
    */
+        // @ts-ignore e is an rtk query error
   async edit({ params }: HttpContext) {}
 
   /**

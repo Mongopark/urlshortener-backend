@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default class UsersController {
+  // @ts-ignore e is an rtk query error
   async index(ctx: HttpContext) {
     return [
       {
